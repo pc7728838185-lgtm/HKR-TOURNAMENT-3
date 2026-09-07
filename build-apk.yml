@@ -1,0 +1,54 @@
+name: Build HKR Tournaments APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Setup Android
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install -D typescript@5.8.3
+
+      - name: Prepare web files
+        run: |
+          mkdir -p www
+          cp index.html app.js auth-update.js config.js styles.css manifest.json www/ 2>/dev/null || true
+          sed -i "s/webDir:'.'/webDir:'www'/" capacitor.config.ts 2>/dev/null || true
+
+      - name: Setup Capacitor Android
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Build APK
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: HKR-Tournaments-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
