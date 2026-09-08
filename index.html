@@ -89,6 +89,55 @@
 .hidden{
   display:none !important;
 }
+  .auth-gate{
+  position:fixed;
+  inset:0;
+  z-index:99999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:#080808;
+}
+
+.auth-gate.hidden{
+  display:none;
+}
+
+.auth-gate-card{
+  width:100%;
+  max-width:420px;
+  text-align:center;
+  padding:30px 22px;
+  border-radius:20px;
+  background:#111;
+  border:1px solid #292929;
+}
+
+.auth-gate-card img{
+  width:90px;
+  height:90px;
+  object-fit:contain;
+  margin-bottom:12px;
+}
+
+.auth-gate-card h1{
+  margin:0 0 6px;
+}
+
+.auth-gate-card p{
+  opacity:.7;
+  margin-bottom:25px;
+}
+
+.auth-gate-card .btn{
+  width:100%;
+  margin-bottom:8px;
+}
+
+.auth-gate-card .auth-link{
+  width:100%;
+}
 </style>
 </head>
 
