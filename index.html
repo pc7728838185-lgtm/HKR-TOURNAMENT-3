@@ -1,25 +1,490 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#080808"><meta name="description" content="HKR Tournaments - Free Fire esports tournament platform">
-<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="HKR Tournaments - Free Fire esports tournament platform">
+
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css">
+
 <title>HKR Tournaments</title>
+
 <style>
-.auth-actions{display:flex;flex-direction:column;gap:4px;margin-top:10px}
-.auth-link{background:none;border:0;color:#ff9f1c;text-decoration:underline;cursor:pointer;padding:8px 0}
-.auth-note{font-size:12px;opacity:.75;margin-top:8px;line-height:1.4}
+.auth-actions{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-top:12px;
+}
+
+.auth-link{
+  background:none;
+  border:0;
+  color:#ff9f1c;
+  text-decoration:underline;
+  cursor:pointer;
+  padding:8px 0;
+}
+
+.auth-note{
+  font-size:12px;
+  opacity:.75;
+  margin-top:8px;
+  line-height:1.4;
+}
+
+.auth-form{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.auth-form input{
+  width:100%;
+  box-sizing:border-box;
+}
+
+.auth-title{
+  margin-bottom:5px;
+}
+
+.auth-subtitle{
+  font-size:13px;
+  opacity:.75;
+  margin-bottom:15px;
+}
+
+.otp-box{
+  display:none;
+}
+
+.otp-box.active{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.password-box{
+  display:none;
+}
+
+.password-box.active{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.signup-box{
+  display:none;
+}
+
+.signup-box.active{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.hidden{
+  display:none !important;
+}
 </style>
 </head>
+
 <body>
-<header class="topbar"><div class="brand"><img src="assets/hkr-logo.png" alt="HKR"><span>HKR Tournaments</span></div><nav><button data-page="home">Home</button><button data-page="matches">My Matches</button><button data-page="wallet">Wallet</button><button data-page="admin" id="adminNav" class="hidden">Admin</button><button id="authBtn">Login</button></nav></header>
+
+<header class="topbar">
+  <div class="brand">
+    <img src="assets/hkr-logo.png" alt="HKR">
+    <span>HKR Tournaments</span>
+  </div>
+
+  <nav>
+    <button data-page="home">Home</button>
+    <button data-page="matches">My Matches</button>
+    <button data-page="wallet">Wallet</button>
+    <button data-page="admin" id="adminNav" class="hidden">Admin</button>
+    <button id="authBtn">Login</button>
+  </nav>
+</header>
+
 <main>
-<section id="home" class="page active"><div class="hero"><div><p class="eyebrow">FREE FIRE ESPORTS</p><h1>Play. Compete. <span>Win.</span></h1><p>Join verified HKR tournaments, submit your UTR and get your room details after approval.</p></div><img src="assets/hkr-logo.png" alt="HKR Tournaments logo"></div><div class="section-head"><h2>Live Tournaments</h2><button id="refreshBtn" class="ghost">Refresh</button></div><div id="tournamentGrid" class="grid"></div></section>
-<section id="matches" class="page"><div class="section-head"><h2>My Matches</h2></div><div id="matchesList" class="stack"></div></section>
-<section id="wallet" class="page"><div class="section-head"><h2>Wallet & Payout</h2></div><div class="card"><p>Wallet balance is maintained by the server/admin. Approved winnings appear here.</p><div id="walletBox"></div></div></section>
-<section id="admin" class="page"><div class="section-head"><h2>Admin Control Center</h2><button id="adminLogout" class="ghost">Sign out</button></div><div class="admin-tabs"><button data-admin-tab="tournaments">Tournaments</button><button data-admin-tab="payments">Payments</button><button data-admin-tab="settings">Settings</button></div><div id="adminContent"></div></section>
+
+<section id="home" class="page active">
+
+  <div class="hero">
+    <div>
+      <p class="eyebrow">FREE FIRE ESPORTS</p>
+      <h1>Play. Compete. <span>Win.</span></h1>
+      <p>
+        Join verified HKR tournaments, submit your UTR
+        and get your room details after approval.
+      </p>
+    </div>
+
+    <img src="assets/hkr-logo.png" alt="HKR Tournaments logo">
+  </div>
+
+  <div class="section-head">
+    <h2>Live Tournaments</h2>
+    <button id="refreshBtn" class="ghost">Refresh</button>
+  </div>
+
+  <div id="tournamentGrid" class="grid"></div>
+
+</section>
+
+
+<section id="matches" class="page">
+
+  <div class="section-head">
+    <h2>My Matches</h2>
+  </div>
+
+  <div id="matchesList" class="stack"></div>
+
+</section>
+
+
+<section id="wallet" class="page">
+
+  <div class="section-head">
+    <h2>Wallet & Payout</h2>
+  </div>
+
+  <div class="card">
+    <p>
+      Wallet balance is maintained by the server/admin.
+      Approved winnings appear here.
+    </p>
+
+    <div id="walletBox"></div>
+  </div>
+
+</section>
+
+
+<section id="admin" class="page">
+
+  <div class="section-head">
+    <h2>Admin Control Center</h2>
+    <button id="adminLogout" class="ghost">Sign out</button>
+  </div>
+
+  <div class="admin-tabs">
+    <button data-admin-tab="tournaments">Tournaments</button>
+    <button data-admin-tab="payments">Payments</button>
+    <button data-admin-tab="settings">Settings</button>
+  </div>
+
+  <div id="adminContent"></div>
+
+</section>
+
 </main>
-<div id="modal" class="modal hidden"><div class="modal-card"><button class="close" id="closeModal">×</button><div id="modalContent"></div></div></div>
+
+
+<!-- AUTH MODAL -->
+
+<div id="modal" class="modal hidden">
+
+  <div class="modal-card">
+
+    <button class="close" id="closeModal">×</button>
+
+    <div id="modalContent">
+
+      <!-- LOGIN -->
+
+      <div id="loginBox">
+
+        <h2 class="auth-title">Login</h2>
+
+        <p class="auth-subtitle">
+          Login to your HKR Tournaments account
+        </p>
+
+        <form id="loginForm" class="auth-form">
+
+          <input
+            id="loginMobile"
+            type="tel"
+            inputmode="numeric"
+            autocomplete="tel"
+            maxlength="10"
+            placeholder="Mobile Number"
+            required
+          >
+
+          <input
+            id="loginPassword"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Password"
+            required
+          >
+
+          <button type="submit">
+            Login
+          </button>
+
+        </form>
+
+        <div class="auth-actions">
+
+          <button
+            type="button"
+            class="auth-link"
+            id="forgotPasswordBtn"
+          >
+            Forgot Password?
+          </button>
+
+          <button
+            type="button"
+            class="auth-link"
+            id="showSignupBtn"
+          >
+            Don't have an account? Sign Up
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- SIGN UP -->
+
+      <div id="signupBox" class="signup-box">
+
+        <h2 class="auth-title">Create Account</h2>
+
+        <p class="auth-subtitle">
+          Join HKR Tournaments
+        </p>
+
+        <form id="signupForm" class="auth-form">
+
+          <input
+            id="signupReferId"
+            type="text"
+            placeholder="Refer ID"
+            autocomplete="off"
+          >
+
+          <input
+            id="signupMobile"
+            type="tel"
+            inputmode="numeric"
+            autocomplete="tel"
+            maxlength="10"
+            placeholder="Mobile Number"
+            required
+          >
+
+          <input
+            id="signupEmail"
+            type="email"
+            autocomplete="email"
+            placeholder="Email ID"
+            required
+          >
+
+          <input
+            id="signupName"
+            type="text"
+            autocomplete="name"
+            placeholder="Name"
+            required
+          >
+
+          <input
+            id="signupPassword"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Create Password"
+            required
+          >
+
+          <input
+            id="signupConfirmPassword"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Confirm Password"
+            required
+          >
+
+          <button type="submit">
+            Sign Up
+          </button>
+
+        </form>
+
+        <div class="auth-actions">
+
+          <button
+            type="button"
+            class="auth-link"
+            id="showLoginBtn"
+          >
+            Already have an account? Login
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- FORGOT PASSWORD -->
+
+      <div id="forgotBox" class="signup-box">
+
+        <h2 class="auth-title">Forgot Password</h2>
+
+        <p class="auth-subtitle">
+          Enter your registered mobile number
+        </p>
+
+        <form id="forgotForm" class="auth-form">
+
+          <input
+            id="forgotMobile"
+            type="tel"
+            inputmode="numeric"
+            autocomplete="tel"
+            maxlength="10"
+            placeholder="Mobile Number"
+            required
+          >
+
+          <button type="submit">
+            Send OTP
+          </button>
+
+        </form>
+
+        <div class="auth-actions">
+
+          <button
+            type="button"
+            class="auth-link"
+            id="backToLoginBtn"
+          >
+            Back to Login
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- OTP VERIFICATION -->
+
+      <div id="otpBox" class="otp-box">
+
+        <h2 class="auth-title">Verify OTP</h2>
+
+        <p class="auth-subtitle">
+          Enter the OTP sent to your mobile number
+        </p>
+
+        <form id="otpForm" class="auth-form">
+
+          <input
+            id="otpInput"
+            type="text"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            maxlength="6"
+            placeholder="Enter 6-digit OTP"
+            required
+          >
+
+          <button type="submit">
+            Verify OTP
+          </button>
+
+        </form>
+
+        <div class="auth-actions">
+
+          <button
+            type="button"
+            class="auth-link"
+            id="resendOtpBtn"
+          >
+            Resend OTP
+          </button>
+
+          <button
+            type="button"
+            class="auth-link"
+            id="otpBackBtn"
+          >
+            Back
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- RESET PASSWORD -->
+
+      <div id="resetPasswordBox" class="password-box">
+
+        <h2 class="auth-title">Create New Password</h2>
+
+        <p class="auth-subtitle">
+          Set a new password for your account
+        </p>
+
+        <form id="resetPasswordForm" class="auth-form">
+
+          <input
+            id="newPassword"
+            type="password"
+            autocomplete="new-password"
+            placeholder="New Password"
+            required
+          >
+
+          <input
+            id="confirmNewPassword"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Confirm New Password"
+            required
+          >
+
+          <button type="submit">
+            Reset Password
+          </button>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
 <div id="toast" class="toast"></div>
-<script src="config.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="app.js"></script><script src="auth-update.js"></script>
-</body></html>
+
+
+<!-- EXISTING HKR SCRIPTS -->
+
+<script src="config.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="app.js"></script>
+
+<script src="auth-update.js"></script>
+
+</body>
+</html>
